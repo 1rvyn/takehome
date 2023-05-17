@@ -16,4 +16,8 @@ func main() {
 
 func setupRoutes(app *fiber.App) {
 	app.Get("/hello", routes.Hello)
+	app.Post("/create", routes.CreateUser)
+	app.Get("/user/:id", routes.GetUser)
+	app.Put("/user/:id", routes.UpdateUser)
+	app.Delete("/user/:id", routes.DeleteUser)
 }
