@@ -5,7 +5,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func CreateUser(c *fiber.Ctx) error {
+func Register(c *fiber.Ctx) error {
 	// Parse the request body into a new User struct
 	var newUser models.User
 	err := c.BodyParser(&newUser)

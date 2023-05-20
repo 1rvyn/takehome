@@ -1,49 +1,35 @@
 package routes
 
 import (
-	"encoding/json"
-	"fmt"
 	"strconv"
 
-	"github.com/1rvyn/takehome/models"
 	"github.com/gofiber/fiber/v2"
 )
 
 func UpdateUser(c *fiber.Ctx) error {
-
-	userID := c.Params("id")
-	fmt.Println("user is ", userID)
-
-	// parse the new user from the payload
-
-	user := new(models.User)
-
-	err := json.Unmarshal(c.Body(), user)
+	// Parse the user ID from the request parameters
+	userID, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
-		fmt.Println(err)
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"message": "Invalid request payload",
-		})
+		return err
 	}
 
-	// find the user in the users slice and update it
-
-	update := false
-	for i, u := range users {
-		if strconv.Itoa(u.ID) == userID {
-			users[i] = *user
-			update = true
-		}
-	}
-
-	// good practice
-	if !update {
+	// Look up the user by ID in the userMap map
+	user, ok := userMap[userID]
+	if !ok {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 			"message": "User not found",
 		})
 	}
 
-	fmt.Println("new users slice is ", users)
+	// Parse the request body into the user object
+	err = c.BodyParser(user)
+	if err != nil {
+		return err
+	}
 
-	return c.SendString("UpdateUser")
+	// Return a response indicating success
+	return c.JSON(fiber.Map{
+		"message": "User updated successfully",
+		"user":    user,
+	})
 }

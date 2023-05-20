@@ -9,7 +9,8 @@ COPY . /app
 
 # Env vars for hashing / other needed things
 ENV SECRET_KEY=$SECRET_KEY \
-    SALT=$SALT 
+    SALT=$SALT \
+    SECRET_KEY2=$SECRET_KEY2
 
 # Build the Go app
 RUN go build -o main .
