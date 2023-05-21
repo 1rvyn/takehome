@@ -45,10 +45,45 @@ func setupRoutes(app *fiber.App) {
 	app.Post("/login", routes.Login)
 	app.Post("/register", routes.Register)
 
-	app.Post("/create", routes.CreateUser)
+	// app.Post("/create", routes.CreateUser)
 
-	app.Get("/user/:id", routes.GetUser)
-	app.Put("/update/:id", routes.UpdateUser)
-	app.Delete("/user/:id", routes.DeleteUser)
-	app.Get("/users", routes.GetAllUsers)
+	protected := app.Group("/")
+	protected.Use(requireAuth())
+	protected.Post("/create", routes.CreateUser)
+	protected.Get("/user/:id", routes.GetUser)
+	protected.Put("/update/:id", routes.UpdateUser)
+	protected.Delete("/user/:id", routes.DeleteUser)
+	protected.Get("/users", routes.GetAllUsers)
+
+	app.Get("/session", routes.GetSession) // testing
+}
+
+func requireAuth() fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		// Get the request cookie
+		cookie := c.Cookies("jwt")
+
+		if cookie == "" {
+			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+				"message": "Unauthorized access",
+			})
+		}
+
+		// Get session from redis
+		session, err := database.Redis.GetHMap(cookie)
+		if err != nil {
+			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+				"message": "Unauthorized access",
+			})
+		}
+
+		if session == nil || session["user_id"] == "" {
+			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+				"message": "Unauthorized access",
+			})
+		}
+
+		// Call the next handler
+		return c.Next()
+	}
 }

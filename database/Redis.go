@@ -37,6 +37,13 @@ func ConnectToRedis() {
 	fmt.Println("Connected to Redis")
 
 	Redis = RedisInstance{Client: client}
+
+	// Delete all stored sessions when Redis is first started up
+	numDeleted, err := Redis.DeleteAllSessions()
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("Deleted %d stored sessions\n", numDeleted)
 }
 
 func (r *RedisInstance) PutHMap(key string, value map[string]interface{}) error {
@@ -75,4 +82,28 @@ func (r *RedisInstance) DeleteHMap(key string) error {
 	}
 
 	return nil
+}
+
+func (r *RedisInstance) DeleteAllSessions() (int64, error) {
+	keys, err := r.Client.Keys(ctx, "*").Result()
+	if err != nil {
+		fmt.Println("Error getting keys from Redis", err)
+		return 0, err
+	}
+
+	// handle case where there are no keys
+	if len(keys) == 0 {
+		fmt.Println("No keys found in Redis")
+		return 0, nil
+	}
+
+	// log the amount to CLI
+	numDeleted, err := r.Client.Del(ctx, keys...).Result()
+	if err != nil {
+		fmt.Println("Error deleting keys from Redis", err)
+		return 0, err
+	}
+
+	fmt.Printf("Deleted %d keys from Redis\n", numDeleted)
+	return numDeleted, nil
 }
