@@ -54,6 +54,7 @@ func setupRoutes(app *fiber.App) {
 	protected.Put("/update/:id", routes.UpdateUser)
 	protected.Delete("/user/:id", routes.DeleteUser)
 	protected.Get("/users", routes.GetAllUsers)
+	protected.Post("/upload", routes.UploadFile)
 
 	app.Get("/session", routes.GetSession) // testing
 }
