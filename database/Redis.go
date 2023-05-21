@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"os"
 	"time"
 
 	"github.com/go-redis/redis/v8"
@@ -24,7 +25,9 @@ func ConnectToRedis() {
 		// Addr:     "redis:6379", // Redis service name on the Docker network
 		// Password: "",
 		// DB:       0,
-		Addr: 
+		Addr:     os.Getenv("REDIS_HOST"), // Redis external for local development
+		Password: os.Getenv("REDIS_PASSWORD"),
+		DB:       0,
 	})
 
 	_, err := client.Ping(context.Background()).Result()

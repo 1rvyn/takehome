@@ -9,6 +9,8 @@ import (
 	"github.com/joho/godotenv"
 
 	"github.com/1rvyn/takehome/routes"
+
+	"github.com/1rvyn/takehome/database"
 )
 
 func main() {
@@ -25,6 +27,8 @@ func main() {
 
 	fmt.Println("Secret Key: ", SecretKey, "Salt: ", SALT, "secret2: ", SecretKey2)
 
+	database.ConnectToRedis()
+
 	// Create the fiber app and setup routes
 	app := fiber.New()
 
@@ -38,7 +42,6 @@ func main() {
 func setupRoutes(app *fiber.App) {
 
 	app.Get("/", routes.Hello)
-
 	app.Post("/login", routes.Login)
 	app.Post("/register", routes.Register)
 
@@ -47,4 +50,5 @@ func setupRoutes(app *fiber.App) {
 	app.Get("/user/:id", routes.GetUser)
 	app.Put("/update/:id", routes.UpdateUser)
 	app.Delete("/user/:id", routes.DeleteUser)
+	app.Get("/users", routes.GetAllUsers)
 }

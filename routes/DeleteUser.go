@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"fmt"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
@@ -23,6 +24,8 @@ func DeleteUser(c *fiber.Ctx) error {
 
 	// Remove the user from the userMap map
 	delete(userMap, userID)
+
+	fmt.Println(userMap)
 
 	// Return a response indicating success
 	return c.JSON(fiber.Map{
