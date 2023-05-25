@@ -4,7 +4,7 @@ FROM golang:latest
 # Set the working directory to /app
 WORKDIR /app
 
-# Copy the current directory contents into the container at /app
+# Copy the current directory contents into the container at /app, excluding the frontend folder
 COPY . /app
 
 # Env vars for hashing / other needed things

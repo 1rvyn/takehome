@@ -1,2 +1,6 @@
-*.env
 ../uploads/*.pdf
+frontend/node_modules
+frontend/build
+frontend/*.env
+frontend/.DS_Store
+.gitignore

@@ -13,6 +13,16 @@ func Register(c *fiber.Ctx) error {
 		return err
 	}
 
+	// Check if the email already exists in userMap
+	for _, user := range userMap {
+		if user.Email == newUser.Email {
+			return c.JSON(fiber.Map{
+				"success": false,
+				"message": "email already in use",
+			})
+		}
+	}
+
 	// Generate a new ID for the user
 	newID := len(userMap) + 1 // We would typically use a UUID here in a DB where the DB assigns the ID
 	newUser.ID = newID

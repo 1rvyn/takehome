@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"os"
 	"time"
 
 	"github.com/go-redis/redis/v8"
@@ -22,12 +21,12 @@ func ConnectToRedis() {
 	fmt.Println("Connecting to Redis.....")
 
 	client := redis.NewClient(&redis.Options{
-		// Addr:     "redis:6379", // Redis service name on the Docker network
-		// Password: "",
-		// DB:       0,
-		Addr:     os.Getenv("REDIS_HOST"), // Redis external for local development
-		Password: os.Getenv("REDIS_PASSWORD"),
+		Addr:     "redis:6379", // Redis service name on the Docker network
+		Password: "",
 		DB:       0,
+		// Addr:     os.Getenv("REDIS_HOST"), // Redis external for local development on my mac
+		// Password: os.Getenv("REDIS_PASSWORD"),
+		// DB:       0,
 	})
 
 	_, err := client.Ping(context.Background()).Result()

@@ -1,0 +1,48 @@
+version: "3.9"
+services:
+  watchtower:
+    image: containrrr/watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: --interval 300 --cleanup frontend backend redis
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "5173:5173"
+    networks:
+      shared:
+        aliases:
+          - frontend
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: backend:latest
+    ports:
+      - "8080:8080"
+    depends_on:
+      - redis
+    env_file:
+      - .env
+    networks:
+      shared:
+        aliases:
+          - backend
+    command: bash -c "sleep 2 && ./main"
+
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
+    environment:
+      REDIS_PASSWORD: password
+      REDIS_DB: 1
+    networks:
+      shared:
+        aliases:
+          - redis
+
+networks:
+  shared:
