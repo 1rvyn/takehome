@@ -24,7 +24,7 @@ func Register(c *fiber.Ctx) error {
 	}
 
 	// Generate a new ID for the user
-	newID := len(userMap) + 1 // We would typically use a UUID here in a DB where the DB assigns the ID
+	newID := len(userMap) + 1
 	newUser.ID = newID
 
 	// Add the new user to the userMap map
